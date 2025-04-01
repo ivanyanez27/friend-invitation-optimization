@@ -3,7 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Do You Want to Play With Me?</title>
+    <meta name="description" content="A fun interactive game asking if you want to play. Try to click the 'No' button - if you can catch it!">
+    <meta name="keywords" content="play with me, fun game, interactive button, playful website, catch the button">
+    <meta name="author" content="Your Name">
+    <meta property="og:title" content="Do You Want to Play With Me?">
+    <meta property="og:description" content="A fun interactive game with a button that doesn't want to be clicked. Try to catch it!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://friendinvitationoptimization.com">
+    <meta property="og:image" content="https://www.freepik.com/vectors/playful-background">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Do You Want to Play With Me?">
+    <meta name="twitter:description" content="A fun interactive game with a button that doesn't want to be clicked!">
+    <meta name="twitter:image" content="https://www.freepik.com/vectors/playful-background">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="canonical" href="https://friendinvitationoptimization.com">
+    <title>Do You Want to Play With Me? | Fun Interactive Game</title>
     <style>
         * {
             box-sizing: border-box;
@@ -121,15 +136,40 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Do you want to play with me?</h1>
-        <div class="buttons">
-            <button class="btn btn-yes">Yes!</button>
-            <button class="btn btn-no">No</button>
+    <main>
+        <div class="container">
+            <h1>Do you want to play with me?</h1>
+            <div class="buttons">
+                <button class="btn btn-yes" aria-label="Yes, I want to play">Yes!</button>
+                <button class="btn btn-no" aria-label="No, I don't want to play">No</button>
+            </div>
         </div>
-    </div>
+    </main>
     
-    <div class="celebration"></div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Do You Want to Play With Me?",
+        "description": "A fun interactive game where the 'No' button runs away when you try to click it.",
+        "url": "https://friendinvitationoptimization.com",
+        "author": {
+            "@type": "Person",
+            "name": "Your Name"
+        },
+        "keywords": "fun game, interactive button, playful website, catch the button"
+    }
+    </script>
+    
+    <div class="celebration" aria-hidden="true"></div>
+    
+    <footer style="position: fixed; bottom: 5px; width: 100%; text-align: center; font-size: 0.7rem; color: rgba(255,255,255,0.7);">
+        <p>&copy; <span id="year">2025</span> <a href="/" style="color: rgba(255,255,255,0.8); text-decoration: none;">YourWebsite</a>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -138,17 +178,14 @@
             const container = document.querySelector('.container');
             const celebration = document.querySelector('.celebration');
             
-            // Check if device supports hover
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             
             if (isTouchDevice) {
-                // For touch devices
                 noBtn.addEventListener('touchstart', moveButton);
                 document.addEventListener('touchmove', function(e) {
                     handleTouch(e);
                 }, { passive: false });
             } else {
-                // For non-touch devices
                 noBtn.addEventListener('mouseover', moveButton);
                 noBtn.addEventListener('mousemove', handleMouseMove);
                 document.addEventListener('mousemove', function(e) {
@@ -160,8 +197,6 @@
                 if (e.touches && e.touches[0]) {
                     const touch = e.touches[0];
                     const btnRect = noBtn.getBoundingClientRect();
-                    
-                    // Check if touch is near the button
                     const touchX = touch.clientX;
                     const touchY = touch.clientY;
                     
@@ -171,7 +206,6 @@
                     const distY = touchY - btnCenterY;
                     const distance = Math.sqrt(distX * distX + distY * distY);
                     
-                    // If touch is getting close, move the button
                     if (distance < 150) {
                         moveButton();
                         e.preventDefault();
@@ -181,107 +215,85 @@
             
             function handleMouseMove(e) {
                 const btnRect = noBtn.getBoundingClientRect();
-                if (!btnRect.width) return; // Button might be hidden
+                if (!btnRect.width) return;
                 
                 const mouseX = e.clientX;
                 const mouseY = e.clientY;
-                
-                // Calculate distance from mouse to button center
                 const btnCenterX = btnRect.left + btnRect.width / 2;
                 const btnCenterY = btnRect.top + btnRect.height / 2;
                 const distX = mouseX - btnCenterX;
                 const distY = mouseY - btnCenterY;
                 const distance = Math.sqrt(distX * distX + distY * distY);
                 
-                // If mouse is getting close but not directly over, also move
                 if (distance < 100) {
                     moveButton();
                 }
             }
             
             function moveButton() {
-                // Get viewport dimensions - adjust for scrolling
                 const viewportWidth = window.innerWidth;
                 const viewportHeight = window.innerHeight;
                 
-                // Get button dimensions
                 const btnRect = noBtn.getBoundingClientRect();
                 
-                // Calculate safe area (accounting for small screens)
                 const safeMargin = Math.min(viewportWidth, viewportHeight) * 0.1;
                 const maxX = viewportWidth - btnRect.width - safeMargin;
                 const maxY = viewportHeight - btnRect.height - safeMargin;
                 
-                // Ensure we don't try to position off-screen on small devices
                 if (maxX <= 0 || maxY <= 0) return;
                 
                 const newX = Math.max(safeMargin, Math.random() * maxX);
                 const newY = Math.max(safeMargin, Math.random() * maxY);
                 
-                // Apply new position with a smooth animation
                 noBtn.style.position = 'fixed';
                 noBtn.style.left = `${newX}px`;
                 noBtn.style.top = `${newY}px`;
                 noBtn.style.transition = 'all 0.3s ease';
-                noBtn.style.zIndex = '1000'; // Make sure button stays on top
+                noBtn.style.zIndex = '1000';
                 
-                // Add a little shake for fun
                 noBtn.style.animation = 'shake 0.5s ease';
                 setTimeout(() => {
                     noBtn.style.animation = '';
                 }, 500);
             }
             
-            // When "Yes" is clicked
             yesBtn.addEventListener('click', function() {
-                // Hide the No button
                 noBtn.style.display = 'none';
                 
-                // Change text and apply bounce animation
                 document.querySelector('h1').textContent = 'Yay! Let\'s play!';
                 container.style.transform = 'scale(1.1)';
                 
-                // Create confetti explosion
                 createConfetti();
                 
-                // Make the Yes button bounce
                 yesBtn.style.animation = 'bounce 1s ease infinite';
             });
             
             function createConfetti() {
                 celebration.style.display = 'block';
                 
-                // Adjust confetti count based on device performance
                 const isMobile = window.innerWidth < 768;
                 const confettiCount = isMobile ? 50 : 100;
                 
-                // Create confetti pieces
                 for (let i = 0; i < confettiCount; i++) {
                     const confetti = document.createElement('div');
                     confetti.className = 'confetti';
                     
-                    // Random position
                     const startX = Math.random() * window.innerWidth;
                     const startY = -20;
                     
-                    // Random color
                     const colors = ['#f94144', '#f3722c', '#f8961e', '#f9c74f', '#90be6d', '#43aa8b', '#577590'];
                     const color = colors[Math.floor(Math.random() * colors.length)];
                     
-                    // Random size
                     const size = Math.random() * 10 + 5;
                     
-                    // Apply styles
                     confetti.style.left = `${startX}px`;
                     confetti.style.top = `${startY}px`;
                     confetti.style.backgroundColor = color;
                     confetti.style.width = `${size}px`;
                     confetti.style.height = `${size}px`;
                     
-                    // Add to celebration container
                     celebration.appendChild(confetti);
                     
-                    // Animate falling
                     setTimeout(() => {
                         confetti.style.transition = 'all 3s ease-out';
                         confetti.style.top = `${window.innerHeight + 100}px`;
@@ -289,7 +301,6 @@
                         confetti.style.opacity = '1';
                         confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
                         
-                        // Remove after animation
                         setTimeout(() => {
                             confetti.remove();
                         }, 3000);
@@ -297,7 +308,6 @@
                 }
             }
             
-            // Hover effect for Yes button
             yesBtn.addEventListener('mouseover', function() {
                 this.style.transform = 'scale(1.2)';
                 this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
