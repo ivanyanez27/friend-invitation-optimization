@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Do You Want to Play With Me?</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            margin: 0;
+            overflow: hidden;
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5% 7%;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: transform 0.3s ease;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 5vh;
+            animation: bounce 2s infinite;
+            word-wrap: break-word;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: clamp(15px, 4vw, 30px);
+            margin-top: 5vh;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: clamp(10px, 3vw, 15px) clamp(20px, 5vw, 40px);
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: bold;
+            margin: 5px;
+            touch-action: manipulation;
+        }
+        
+        @media (hover: hover) {
+            .btn:hover {
+                transform: scale(1.1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+        }
+        
+        .btn-yes {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .btn-no {
+            background-color: #ff6b6b;
+            color: white;
+            position: relative;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            border-radius: 50%;
+            opacity: 0;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-20px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        @keyframes shake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(5px, 5px) rotate(5deg); }
+            50% { transform: translate(0, -5px) rotate(-5deg); }
+            75% { transform: translate(-5px, 5px) rotate(5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Do you want to play with me?</h1>
+        <div class="buttons">
+            <button class="btn btn-yes">Yes!</button>
+            <button class="btn btn-no">No</button>
+        </div>
+    </div>
+    
+    <div class="celebration"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const noBtn = document.querySelector('.btn-no');
+            const yesBtn = document.querySelector('.btn-yes');
+            const container = document.querySelector('.container');
+            const celebration = document.querySelector('.celebration');
+            
+            // Check if device supports hover
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            
+            if (isTouchDevice) {
+                // For touch devices
+                noBtn.addEventListener('touchstart', moveButton);
+                document.addEventListener('touchmove', function(e) {
+                    handleTouch(e);
+                }, { passive: false });
+            } else {
+                // For non-touch devices
+                noBtn.addEventListener('mouseover', moveButton);
+                noBtn.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mousemove', function(e) {
+                    handleMouseMove(e);
+                });
+            }
+            
+            function handleTouch(e) {
+                if (e.touches && e.touches[0]) {
+                    const touch = e.touches[0];
+                    const btnRect = noBtn.getBoundingClientRect();
+                    
+                    // Check if touch is near the button
+                    const touchX = touch.clientX;
+                    const touchY = touch.clientY;
+                    
+                    const btnCenterX = btnRect.left + btnRect.width / 2;
+                    const btnCenterY = btnRect.top + btnRect.height / 2;
+                    const distX = touchX - btnCenterX;
+                    const distY = touchY - btnCenterY;
+                    const distance = Math.sqrt(distX * distX + distY * distY);
+                    
+                    // If touch is getting close, move the button
+                    if (distance < 150) {
+                        moveButton();
+                        e.preventDefault();
+                    }
+                }
+            }
+            
+            function handleMouseMove(e) {
+                const btnRect = noBtn.getBoundingClientRect();
+                if (!btnRect.width) return; // Button might be hidden
+                
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                // Calculate distance from mouse to button center
+                const btnCenterX = btnRect.left + btnRect.width / 2;
+                const btnCenterY = btnRect.top + btnRect.height / 2;
+                const distX = mouseX - btnCenterX;
+                const distY = mouseY - btnCenterY;
+                const distance = Math.sqrt(distX * distX + distY * distY);
+                
+                // If mouse is getting close but not directly over, also move
+                if (distance < 100) {
+                    moveButton();
+                }
+            }
+            
+            function moveButton() {
+                // Get viewport dimensions - adjust for scrolling
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                
+                // Get button dimensions
+                const btnRect = noBtn.getBoundingClientRect();
+                
+                // Calculate safe area (accounting for small screens)
+                const safeMargin = Math.min(viewportWidth, viewportHeight) * 0.1;
+                const maxX = viewportWidth - btnRect.width - safeMargin;
+                const maxY = viewportHeight - btnRect.height - safeMargin;
+                
+                // Ensure we don't try to position off-screen on small devices
+                if (maxX <= 0 || maxY <= 0) return;
+                
+                const newX = Math.max(safeMargin, Math.random() * maxX);
+                const newY = Math.max(safeMargin, Math.random() * maxY);
+                
+                // Apply new position with a smooth animation
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = `${newX}px`;
+                noBtn.style.top = `${newY}px`;
+                noBtn.style.transition = 'all 0.3s ease';
+                noBtn.style.zIndex = '1000'; // Make sure button stays on top
+                
+                // Add a little shake for fun
+                noBtn.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    noBtn.style.animation = '';
+                }, 500);
+            }
+            
+            // When "Yes" is clicked
+            yesBtn.addEventListener('click', function() {
+                // Hide the No button
+                noBtn.style.display = 'none';
+                
+                // Change text and apply bounce animation
+                document.querySelector('h1').textContent = 'Yay! Let\'s play!';
+                container.style.transform = 'scale(1.1)';
+                
+                // Create confetti explosion
+                createConfetti();
+                
+                // Make the Yes button bounce
+                yesBtn.style.animation = 'bounce 1s ease infinite';
+            });
+            
+            function createConfetti() {
+                celebration.style.display = 'block';
+                
+                // Adjust confetti count based on device performance
+                const isMobile = window.innerWidth < 768;
+                const confettiCount = isMobile ? 50 : 100;
+                
+                // Create confetti pieces
+                for (let i = 0; i < confettiCount; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Random position
+                    const startX = Math.random() * window.innerWidth;
+                    const startY = -20;
+                    
+                    // Random color
+                    const colors = ['#f94144', '#f3722c', '#f8961e', '#f9c74f', '#90be6d', '#43aa8b', '#577590'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    // Random size
+                    const size = Math.random() * 10 + 5;
+                    
+                    // Apply styles
+                    confetti.style.left = `${startX}px`;
+                    confetti.style.top = `${startY}px`;
+                    confetti.style.backgroundColor = color;
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    
+                    // Add to celebration container
+                    celebration.appendChild(confetti);
+                    
+                    // Animate falling
+                    setTimeout(() => {
+                        confetti.style.transition = 'all 3s ease-out';
+                        confetti.style.top = `${window.innerHeight + 100}px`;
+                        confetti.style.left = `${startX + (Math.random() * 200 - 100)}px`;
+                        confetti.style.opacity = '1';
+                        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                        
+                        // Remove after animation
+                        setTimeout(() => {
+                            confetti.remove();
+                        }, 3000);
+                    }, Math.random() * 500);
+                }
+            }
+            
+            // Hover effect for Yes button
+            yesBtn.addEventListener('mouseover', function() {
+                this.style.transform = 'scale(1.2)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+            });
+            
+            yesBtn.addEventListener('mouseout', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            });
+        });
+    </script>
+</body>
+</html>
